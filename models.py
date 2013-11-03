@@ -1,30 +1,34 @@
-from mongoengine import MongoEngine
+from mongoengine import *
 from datetime import datetime
 
-db = MongoEngine()
+#db = MongoEngine()
  
-class Record(db.Document):
-    IP = db.StringField()
+class Record(Document):
+    IP = StringField()
 
-class MXRecord(db.Document):
-    Priority = db.IntField()
-    Value = db.StringField()
+class MXRecord(EmbeddedDocument):
+    Priority = IntField()
+    Value = StringField()
 
-class NSRecord(db.Document):
-    TTL = db.IntField()
-    Value = db.StringField()
+class NSRecord(EmbeddedDocument):
+    TTL = IntField()
+    Value = StringField()
  
-class Domain(db.Document):
-    ccTLD = db.StringField()
-    dpn = db.StringField()
-    domain = db.StringField()
+class Domain(Document):
+    ccTLD = StringField()
+    dpn = StringField()
+    domain = StringField()
     
-    date_created = db.DateTimeField()
+    date_created = DateTimeField()
     
-    date_update = db.DateTimeField(default=datetime.now)
-    active = db.BooleanField(default=False)
+    date_update = DateTimeField(default=datetime.now)
+    active = BooleanField(default=False)
     
-    MX = db.ListField(db.EmbeddedDocumentField(MXrecord))
-    NS = db.ListField(db.EmbeddedDocumentField(NSRecord))
-    TXT = db.ListField(db.StringField()) 
+    MX = ListField(EmbeddedDocumentField(MXRecord))
+    NS = ListField(EmbeddedDocumentField(NSRecord))
+    TXT = ListField(StringField()) 
     
+    meta = {
+        'indexes': ['active', 
+                    {'fields': ['ccTLD','dpn','domain'], 'unique': True}]
+    }    

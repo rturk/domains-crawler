@@ -15,7 +15,7 @@ class NSRecord(EmbeddedDocument):
     Value = StringField()
  
 class Domain(Document):
-    ccTLD = StringField()
+    tld = StringField()
     dpn = StringField()
     domain = StringField()
     
